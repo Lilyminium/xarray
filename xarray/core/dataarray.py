@@ -74,6 +74,7 @@ def _infer_coords_and_dims(shape, coords, dims):
 
     return new_coords, dims
 
+
 def _check_shape_consistency(shape, coords, dims):
     # moved from _infer_coords_and_dims
     sizes = dict(zip(dims, shape))
@@ -95,7 +96,6 @@ def _check_shape_consistency(shape, coords, dims):
                              'matching the dimension size'
                              % (k, v.shape, (sizes[k],)))
 
-    
 
 
 class _LocIndexer(object):
