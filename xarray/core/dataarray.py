@@ -69,8 +69,15 @@ def _infer_coords_and_dims(shape, coords, dims):
             var.dims = (dim,)
             new_coords[dim] = var
 
+    _check_shape_consistency(shape, new_coords, dims)
+    assert_unique_multiindex_level_names(new_coords)
+
+    return new_coords, dims
+
+def _check_shape_consistency(shape, coords, dims):
+    # moved from _infer_coords_and_dims
     sizes = dict(zip(dims, shape))
-    for k, v in new_coords.items():
+    for k, v in coords.items():
         if any(d not in dims for d in v.dims):
             raise ValueError('coordinate %s has dimensions %s, but these '
                              'are not a subset of the DataArray '
@@ -88,9 +95,7 @@ def _infer_coords_and_dims(shape, coords, dims):
                              'matching the dimension size'
                              % (k, v.shape, (sizes[k],)))
 
-    assert_unique_multiindex_level_names(new_coords)
-
-    return new_coords, dims
+    
 
 
 class _LocIndexer(object):
@@ -230,6 +235,9 @@ class DataArray(AbstractArray, DataWithCoords):
 
         # uncomment for a useful consistency check:
         # assert all(isinstance(v, Variable) for v in coords.values())
+
+        # check shape consistency
+        _check_shape_consistency(variable.shape, coords, variable.dims)
 
         # These fully describe a DataArray
         self._variable = variable
