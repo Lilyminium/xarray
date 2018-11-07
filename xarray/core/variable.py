@@ -1648,8 +1648,8 @@ class Variable(common.AbstractArray, arithmetic.SupportsArithmetic,
         @functools.wraps(f)
         def func(self, *args, **kwargs):
             with np.errstate(all='ignore'):
-                return self.__array_wrap__(f(self.data, *args, **kwargs), 
-                                            fastpath=True)
+                return self.__array_wrap__(f(self.data, *args, **kwargs),
+                                           fastpath=True)
         return func
 
     @staticmethod
