@@ -1956,7 +1956,7 @@ class DataArray(AbstractArray, DataWithCoords):
         def func(self, *args, **kwargs):
             with np.errstate(all='ignore'):
                 return self.__array_wrap__(f(self.variable.data, *args,
-                                             **kwargs))
+                                             **kwargs), fastpath=True)
 
         return func
 
