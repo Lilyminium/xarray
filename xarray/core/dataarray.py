@@ -232,12 +232,11 @@ class DataArray(AbstractArray, DataWithCoords):
             data = as_compatible_data(data)
             coords, dims = _infer_coords_and_dims(data.shape, coords, dims)
             variable = Variable(dims, data, attrs, encoding, fastpath=True)
+            # check shape consistency
+            _check_shape_consistency(variable.shape, coords, variable.dims)
 
         # uncomment for a useful consistency check:
         # assert all(isinstance(v, Variable) for v in coords.values())
-
-        # check shape consistency
-        _check_shape_consistency(variable.shape, coords, variable.dims)
 
         # These fully describe a DataArray
         self._variable = variable
@@ -1945,8 +1944,10 @@ class DataArray(AbstractArray, DataWithCoords):
         else:
             return None
 
-    def __array_wrap__(self, obj, context=None):
+    def __array_wrap__(self, obj, context=None, fastpath=False):
         new_var = self.variable.__array_wrap__(obj, context)
+        if not fastpath:
+            _check_shape_consistency(new_var.shape, self._coords, new_var.dims)
         return self._replace(new_var)
 
     @staticmethod
